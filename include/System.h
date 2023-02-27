@@ -22,11 +22,11 @@
 
 
 #include <unistd.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<string>
-#include<thread>
-#include<opencv2/core/core.hpp>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <thread>
+#include <opencv2/core/core.hpp>
 
 #include "Tracking.h"
 #include "FrameDrawer.h"
@@ -44,29 +44,25 @@
 namespace ORB_SLAM3
 {
 
-class Verbose
-{
+class Verbose {
 public:
-    enum eLevel
-    {
-        VERBOSITY_QUIET=0,
-        VERBOSITY_NORMAL=1,
-        VERBOSITY_VERBOSE=2,
-        VERBOSITY_VERY_VERBOSE=3,
-        VERBOSITY_DEBUG=4
+    enum eLevel {
+        VERBOSITY_QUIET = 0,
+        VERBOSITY_NORMAL = 1,
+        VERBOSITY_VERBOSE = 2,
+        VERBOSITY_VERY_VERBOSE = 3,
+        VERBOSITY_DEBUG = 4
     };
 
     static eLevel th;
 
 public:
-    static void PrintMess(std::string str, eLevel lev)
-    {
-        if(lev <= th)
+    static void PrintMess(std::string str, eLevel lev) {
+        if (lev <= th)
             cout << str << endl;
     }
 
-    static void SetTh(eLevel _th)
-    {
+    static void SetTh(eLevel _th) {
         th = _th;
     }
 };
@@ -80,23 +76,22 @@ class LocalMapping;
 class LoopClosing;
 class Settings;
 
-class System
-{
+class System {
 public:
     // Input sensor
-    enum eSensor{
-        MONOCULAR=0,
-        STEREO=1,
-        RGBD=2,
-        IMU_MONOCULAR=3,
-        IMU_STEREO=4,
-        IMU_RGBD=5,
+    enum eSensor {
+        MONOCULAR = 0,
+        STEREO = 1,
+        RGBD = 2,
+        IMU_MONOCULAR = 3,
+        IMU_STEREO = 4,
+        IMU_RGBD = 5,
     };
 
     // File type
-    enum FileType{
-        TEXT_FILE=0,
-        BINARY_FILE=1,
+    enum FileType {
+        TEXT_FILE = 0,
+        BINARY_FILE = 1,
     };
 
 public:
@@ -107,19 +102,18 @@ public:
     // Proccess the given stereo frame. Images must be synchronized and rectified.
     // Input images: RGB (CV_8UC3) or grayscale (CV_8U). RGB is converted to grayscale.
     // Returns the camera pose (empty if tracking fails).
-    Sophus::SE3f TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timestamp, const vector<IMU::Point>& vImuMeas = vector<IMU::Point>(), string filename="");
+    Sophus::SE3f TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timestamp, const vector<IMU::Point>& vImuMeas = vector<IMU::Point>(), string filename = "");
 
     // Process the given rgbd frame. Depthmap must be registered to the RGB frame.
     // Input image: RGB (CV_8UC3) or grayscale (CV_8U). RGB is converted to grayscale.
     // Input depthmap: Float (CV_32F).
     // Returns the camera pose (empty if tracking fails).
-    Sophus::SE3f TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const double &timestamp, const vector<IMU::Point>& vImuMeas = vector<IMU::Point>(), string filename="");
+    Sophus::SE3f TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const double &timestamp, const vector<IMU::Point>& vImuMeas = vector<IMU::Point>(), string filename = "");
 
     // Proccess the given monocular frame and optionally imu data
     // Input images: RGB (CV_8UC3) or grayscale (CV_8U). RGB is converted to grayscale.
     // Returns the camera pose (empty if tracking fails).
-    Sophus::SE3f TrackMonocular(const cv::Mat &im, const double &timestamp, const vector<IMU::Point>& vImuMeas = vector<IMU::Point>(), string filename="");
-
+    Sophus::SE3f TrackMonocular(const cv::Mat &im, const double &timestamp, const vector<IMU::Point>& vImuMeas = vector<IMU::Point>(), string filename = "");
 
     // This stops local mapping thread (map building) and performs only camera tracking.
     void ActivateLocalizationMode();
