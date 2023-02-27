@@ -180,7 +180,7 @@ void Preintegrated::IntegrateNewMeasurement(const Eigen::Vector3f &acceleration,
     avgW = (dT * avgW + accW * dt) / (dT + dt);
 
     // Update delta position dP and velocity dV (rely on no-updated delta rotation)
-    dP = dP + dV * dt + 0.5 f * dR * acc * dt * dt;
+    dP = dP + dV * dt + 0.5f * dR * acc * dt * dt;
     dV = dV + dR * acc * dt;
 
     // Compute velocity and position parts of matrices A and B (rely on non-updated delta rotation)
