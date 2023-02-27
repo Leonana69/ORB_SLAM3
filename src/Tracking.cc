@@ -999,7 +999,6 @@ bool Tracking::ParseCamParamFile(cv::FileStorage &fSettings) {
 
     cout << "- fps: " << fps << endl;
 
-
     int nRGB = fSettings["Camera.RGB"];
     mbRGB = nRGB;
 

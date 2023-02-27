@@ -42,7 +42,7 @@ g2o::SE3Quat Converter::toSE3Quat(const cv::Mat &cvT) {
 }
 
 g2o::SE3Quat Converter::toSE3Quat(const Sophus::SE3f &T) {
-    return g2o::SE3Quat(T.unit_quaternion().cast <double>(), T.translation().cast < double >());
+    return g2o::SE3Quat(T.unit_quaternion().cast<double>(), T.translation().cast<double>());
 }
 
 cv::Mat Converter::toCvMat(const g2o::SE3Quat &SE3) {
