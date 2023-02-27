@@ -782,7 +782,7 @@ void Frame::ComputeStereoMatches() {
     for (int iR = 0; iR < Nr; iR++) {
         const cv::KeyPoint &kp = mvKeysRight[iR];
         const float &kpY = kp.pt.y;
-        const float r = 2.0 f * mvScaleFactors[mvKeysRight[iR].octave];
+        const float r = 2.0f * mvScaleFactors[mvKeysRight[iR].octave];
         const int maxr = ceil(kpY + r);
         const int minr = floor(kpY - r);
 
@@ -886,7 +886,7 @@ void Frame::ComputeStereoMatches() {
             const float dist2 = vDists[L + bestincR];
             const float dist3 = vDists[L + bestincR + 1];
 
-            const float deltaR = (dist1 - dist3) / (2.0 f * (dist1 + dist3 - 2.0 f * dist2));
+            const float deltaR = (dist1 - dist3) / (2.0f * (dist1 + dist3 - 2.0f * dist2));
 
             if (deltaR < -1 || deltaR > 1)
                 continue;
