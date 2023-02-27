@@ -36,7 +36,7 @@ Atlas::Atlas(int initKFid): mnLastInitKFidMap(initKFid), mHasViewer(false) {
 }
 
 Atlas::~Atlas() {
-    for (std::set <Map *> ::iterator it = mspMaps.begin(), end = mspMaps.end(); it != end) {
+    for (std::set <Map *> ::iterator it = mspMaps.begin(), end = mspMaps.end(); it != end; ) {
         Map *pMi = *it;
 
         if (pMi) {
