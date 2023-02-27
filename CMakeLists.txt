@@ -351,7 +351,7 @@ endif()
 # set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples_old/Monocular-Inertial)
 
 # add_executable(mono_inertial_euroc_old
-        Examples_old/Monocular-Inertial/mono_inertial_euroc.cc)
+#         Examples_old/Monocular-Inertial/mono_inertial_euroc.cc)
 # target_link_libraries(mono_inertial_euroc_old ${PROJECT_NAME})
 
 # add_executable(mono_inertial_tum_vi_old
