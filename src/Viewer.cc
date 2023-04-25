@@ -16,21 +16,28 @@
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "Viewer.h"
 #include <pangolin/pangolin.h>
 
 #include <mutex>
 
-namespace ORB_SLAM3
-{
+namespace ORB_SLAM3 {
 
-Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Tracking *pTracking, const string &strSettingPath, Settings* settings):
-    both(false), mpSystem(pSystem), mpFrameDrawer(pFrameDrawer),mpMapDrawer(pMapDrawer), mpTracker(pTracking),
-    mbFinishRequested(false), mbFinished(true), mbStopped(true), mbStopRequested(false) {
+Viewer::Viewer(System* pSystem, FrameDrawer* pFrameDrawer, MapDrawer* pMapDrawer, Tracking* pTracking, const string& strSettingPath, Settings* settings)
+    : both(false)
+    , mpSystem(pSystem)
+    , mpFrameDrawer(pFrameDrawer)
+    , mpMapDrawer(pMapDrawer)
+    , mpTracker(pTracking)
+    , mbFinishRequested(false)
+    , mbFinished(true)
+    , mbStopped(true)
+    , mbStopRequested(false)
+{
     if (settings) {
         newParameterLoader(settings);
-    } else {
+    }
+    else {
         cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
 
         bool is_correct = ParseViewerParamFile(fSettings);
@@ -38,15 +45,18 @@ Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer
         if (!is_correct) {
             std::cerr << "**ERROR in the config file, the format is not correct**" << std::endl;
             try {
-                throw -1;
-            } catch(exception &e) {}
+                throw - 1;
+            }
+            catch (exception& e) {
+            }
         }
     }
 
     mbStopTrack = false;
 }
 
-void Viewer::newParameterLoader(Settings *settings) {
+void Viewer::newParameterLoader(Settings* settings)
+{
     mImageViewerScale = 1.0f;
 
     float fps = settings->fps();
@@ -65,7 +75,8 @@ void Viewer::newParameterLoader(Settings *settings) {
     mViewpointF = settings->viewPointF();
 }
 
-bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
+bool Viewer::ParseViewerParamFile(cv::FileStorage& fSettings)
+{
     bool b_miss_params = false;
     mImageViewerScale = 1.0f;
 
@@ -77,7 +88,8 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
     cv::FileNode node = fSettings["Camera.width"];
     if (!node.empty()) {
         mImageWidth = node.real();
-    } else {
+    }
+    else {
         std::cerr << "*Camera.width parameter doesn't exist or is not a real number*" << std::endl;
         b_miss_params = true;
     }
@@ -85,7 +97,8 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
     node = fSettings["Camera.height"];
     if (!node.empty()) {
         mImageHeight = node.real();
-    } else {
+    }
+    else {
         std::cerr << "*Camera.height parameter doesn't exist or is not a real number*" << std::endl;
         b_miss_params = true;
     }
@@ -98,7 +111,8 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
     node = fSettings["Viewer.ViewpointX"];
     if (!node.empty()) {
         mViewpointX = node.real();
-    } else {
+    }
+    else {
         std::cerr << "*Viewer.ViewpointX parameter doesn't exist or is not a real number*" << std::endl;
         b_miss_params = true;
     }
@@ -106,7 +120,8 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
     node = fSettings["Viewer.ViewpointY"];
     if (!node.empty()) {
         mViewpointY = node.real();
-    } else {
+    }
+    else {
         std::cerr << "*Viewer.ViewpointY parameter doesn't exist or is not a real number*" << std::endl;
         b_miss_params = true;
     }
@@ -114,7 +129,8 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
     node = fSettings["Viewer.ViewpointZ"];
     if (!node.empty()) {
         mViewpointZ = node.real();
-    } else {
+    }
+    else {
         std::cerr << "*Viewer.ViewpointZ parameter doesn't exist or is not a real number*" << std::endl;
         b_miss_params = true;
     }
@@ -122,7 +138,8 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
     node = fSettings["Viewer.ViewpointF"];
     if (!node.empty()) {
         mViewpointF = node.real();
-    } else {
+    }
+    else {
         std::cerr << "*Viewer.ViewpointF parameter doesn't exist or is not a real number*" << std::endl;
         b_miss_params = true;
     }
@@ -130,18 +147,19 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
     return !b_miss_params;
 }
 
-void Viewer::Run() {
+void Viewer::Run()
+{
     mbFinished = false;
     mbStopped = false;
 
-    pangolin::CreateWindowAndBind("ORB-SLAM3: Map Viewer",1024,768);
+    pangolin::CreateWindowAndBind("ORB-SLAM3: Map Viewer", 1024, 768);
 
     // 3D Mouse handler requires depth testing to be enabled
     glEnable(GL_DEPTH_TEST);
 
     // Issue specific OpenGl we might need
-    glEnable (GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     pangolin::CreatePanel("menu").SetBounds(0.0, 1.0, 0.0, pangolin::Attach::Pix(175));
     pangolin::Var<bool> menuFollowCamera("menu.Follow Camera", false, true);
@@ -155,20 +173,19 @@ void Viewer::Run() {
     pangolin::Var<bool> menuLocalizationMode("menu.Localization Mode", false, true);
     pangolin::Var<bool> menuReset("menu.Reset", false, false);
     pangolin::Var<bool> menuStop("menu.Stop", false, false);
-    pangolin::Var<bool> menuStepByStep("menu.Step By Step", false, true);  // false,  true
+    pangolin::Var<bool> menuStepByStep("menu.Step By Step", false, true); // false,  true
     pangolin::Var<bool> menuStep("menu.Step", false, false);
 
     pangolin::Var<bool> menuShowOptLba("menu.Show LBA opt", false, true);
     // Define Camera Render Object (for view / scene browsing)
     pangolin::OpenGlRenderState s_cam(
-                pangolin::ProjectionMatrix(1024, 768, mViewpointF, mViewpointF, 512, 389, 0.1, 1000), 
-                pangolin::ModelViewLookAt(mViewpointX, mViewpointY, mViewpointZ,  0, 0, 0, 0.0, -1.0, 0.0)
-                );
+        pangolin::ProjectionMatrix(1024, 768, mViewpointF, mViewpointF, 512, 389, 0.1, 1000),
+        pangolin::ModelViewLookAt(mViewpointX, mViewpointY, mViewpointZ, 0, 0, 0, 0.0, -1.0, 0.0));
 
     // Add named OpenGL viewport to window and provide 3D Handler
     pangolin::View& d_cam = pangolin::CreateDisplay()
-            .SetBounds(0.0, 1.0, pangolin::Attach::Pix(175), 1.0, -1024.0f / 768.0f)
-            .SetHandler(new pangolin::Handler3D(s_cam));
+                                .SetBounds(0.0, 1.0, pangolin::Attach::Pix(175), 1.0, -1024.0f / 768.0f)
+                                .SetHandler(new pangolin::Handler3D(s_cam));
 
     pangolin::OpenGlMatrix Twc, Twr;
     Twc.SetIdentity();
@@ -203,18 +220,21 @@ void Viewer::Run() {
                 s_cam.Follow(Twc);
             else
                 s_cam.Follow(Ow);
-        } else if (menuFollowCamera && !bFollow) {
+        }
+        else if (menuFollowCamera && !bFollow) {
             if (bCameraView) {
                 s_cam.SetProjectionMatrix(pangolin::ProjectionMatrix(1024, 768, mViewpointF, mViewpointF, 512, 389, 0.1, 1000));
-                s_cam.SetModelViewMatrix(pangolin::ModelViewLookAt(mViewpointX, mViewpointY, mViewpointZ,  0, 0, 0, 0.0, -1.0, 0.0));
+                s_cam.SetModelViewMatrix(pangolin::ModelViewLookAt(mViewpointX, mViewpointY, mViewpointZ, 0, 0, 0, 0.0, -1.0, 0.0));
                 s_cam.Follow(Twc);
-            } else {
+            }
+            else {
                 s_cam.SetProjectionMatrix(pangolin::ProjectionMatrix(1024, 768, 3000, 3000, 512, 389, 0.1, 1000));
-                s_cam.SetModelViewMatrix(pangolin::ModelViewLookAt(0, 0.01, 10,  0, 0, 0, 0.0, 0.0, 1.0));
+                s_cam.SetModelViewMatrix(pangolin::ModelViewLookAt(0, 0.01, 10, 0, 0, 0, 0.0, 0.0, 1.0));
                 s_cam.Follow(Ow);
             }
             bFollow = true;
-        } else if (!menuFollowCamera && bFollow) {
+        }
+        else if (!menuFollowCamera && bFollow) {
             bFollow = false;
         }
 
@@ -222,7 +242,7 @@ void Viewer::Run() {
             menuCamView = false;
             bCameraView = true;
             s_cam.SetProjectionMatrix(pangolin::ProjectionMatrix(1024, 768, mViewpointF, mViewpointF, 512, 389, 0.1, 10000));
-            s_cam.SetModelViewMatrix(pangolin::ModelViewLookAt(mViewpointX, mViewpointY, mViewpointZ,  0, 0, 0, 0.0, -1.0, 0.0));
+            s_cam.SetModelViewMatrix(pangolin::ModelViewLookAt(mViewpointX, mViewpointY, mViewpointZ, 0, 0, 0, 0.0, -1.0, 0.0));
             s_cam.Follow(Twc);
         }
 
@@ -230,14 +250,15 @@ void Viewer::Run() {
             menuTopView = false;
             bCameraView = false;
             s_cam.SetProjectionMatrix(pangolin::ProjectionMatrix(1024, 768, 3000, 3000, 512, 389, 0.1, 10000));
-            s_cam.SetModelViewMatrix(pangolin::ModelViewLookAt(0, 0.01, 50,  0, 0, 0, 0.0, 0.0, 1.0));
+            s_cam.SetModelViewMatrix(pangolin::ModelViewLookAt(0, 0.01, 50, 0, 0, 0, 0.0, 0.0, 1.0));
             s_cam.Follow(Ow);
         }
 
         if (menuLocalizationMode && !bLocalizationMode) {
             mpSystem->ActivateLocalizationMode();
             bLocalizationMode = true;
-        } else if (!menuLocalizationMode && bLocalizationMode) {
+        }
+        else if (!menuLocalizationMode && bLocalizationMode) {
             mpSystem->DeactivateLocalizationMode();
             bLocalizationMode = false;
         }
@@ -246,7 +267,8 @@ void Viewer::Run() {
             //cout << "Viewer: step by step" << endl;
             mpTracker->SetStepByStep(true);
             bStepByStep = true;
-        } else if (!menuStepByStep && bStepByStep) {
+        }
+        else if (!menuStepByStep && bStepByStep) {
             mpTracker->SetStepByStep(false);
             bStepByStep = false;
         }
@@ -260,7 +282,7 @@ void Viewer::Run() {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         mpMapDrawer->DrawCurrentCamera(Twc);
         if (menuShowKeyFrames || menuShowGraph || menuShowInertialGraph || menuShowOptLba)
-            mpMapDrawer->DrawKeyFrames(menuShowKeyFrames,menuShowGraph, menuShowInertialGraph, menuShowOptLba);
+            mpMapDrawer->DrawKeyFrames(menuShowKeyFrames, menuShowGraph, menuShowInertialGraph, menuShowOptLba);
         if (menuShowPoints)
             mpMapDrawer->DrawMapPoints();
 
@@ -271,8 +293,9 @@ void Viewer::Run() {
 
         if (both) {
             cv::Mat imRight = mpFrameDrawer->DrawRightFrame(trackedImageScale);
-            cv::hconcat(im,imRight,toShow);
-        } else {
+            cv::hconcat(im, imRight, toShow);
+        }
+        else {
             toShow = im;
         }
 
@@ -282,7 +305,7 @@ void Viewer::Run() {
             cv::resize(toShow, toShow, cv::Size(width, height));
         }
 
-        cv::imshow("ORB-SLAM3: Current Frame",toShow);
+        cv::imshow("ORB-SLAM3: Current Frame", toShow);
         cv::waitKey(mT);
 
         if (menuReset) {
@@ -326,38 +349,45 @@ void Viewer::Run() {
     SetFinish();
 }
 
-void Viewer::RequestFinish() {
+void Viewer::RequestFinish()
+{
     unique_lock<mutex> lock(mMutexFinish);
     mbFinishRequested = true;
 }
 
-bool Viewer::CheckFinish() {
+bool Viewer::CheckFinish()
+{
     unique_lock<mutex> lock(mMutexFinish);
     return mbFinishRequested;
 }
 
-void Viewer::SetFinish() {
+void Viewer::SetFinish()
+{
     unique_lock<mutex> lock(mMutexFinish);
     mbFinished = true;
 }
 
-bool Viewer::isFinished() {
+bool Viewer::isFinished()
+{
     unique_lock<mutex> lock(mMutexFinish);
     return mbFinished;
 }
 
-void Viewer::RequestStop() {
+void Viewer::RequestStop()
+{
     unique_lock<mutex> lock(mMutexStop);
     if (!mbStopped)
         mbStopRequested = true;
 }
 
-bool Viewer::isStopped() {
+bool Viewer::isStopped()
+{
     unique_lock<mutex> lock(mMutexStop);
     return mbStopped;
 }
 
-bool Viewer::Stop() {
+bool Viewer::Stop()
+{
     unique_lock<mutex> lock(mMutexStop);
     unique_lock<mutex> lock2(mMutexFinish);
 
@@ -371,7 +401,8 @@ bool Viewer::Stop() {
     return false;
 }
 
-void Viewer::Release() {
+void Viewer::Release()
+{
     unique_lock<mutex> lock(mMutexStop);
     mbStopped = false;
 }
@@ -379,5 +410,4 @@ void Viewer::Release() {
 /*void Viewer::SetTrackingPause() {
     mbStopTrack = true;
 }*/
-
 }
