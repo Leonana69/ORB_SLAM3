@@ -31,9 +31,7 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/export.hpp>
 
-
-namespace ORB_SLAM3
-{
+namespace ORB_SLAM3 {
 class Viewer;
 class Map;
 class MapPoint;
@@ -46,27 +44,26 @@ class Pinhole;
 //BOOST_CLASS_EXPORT_GUID(Pinhole, "Pinhole")
 //BOOST_CLASS_EXPORT_GUID(KannalaBrandt8, "KannalaBrandt8")
 
-class Atlas
-{
+class Atlas {
     friend class boost::serialization::access;
 
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version)
+    template <class Archive>
+    void serialize(Archive& ar, const unsigned int version)
     {
         ar.template register_type<Pinhole>();
         ar.template register_type<KannalaBrandt8>();
 
         // Save/load a set structure, the set structure is broken in libboost 1.58 for ubuntu 16.04, a vector is serializated
         //ar & mspMaps;
-        ar & mvpBackupMaps;
-        ar & mvpCameras;
+        ar& mvpBackupMaps;
+        ar& mvpCameras;
         // Need to save/load the static Id from Frame, KeyFrame, MapPoint and Map
-        ar & Map::nNextId;
-        ar & Frame::nNextId;
-        ar & KeyFrame::nNextId;
-        ar & MapPoint::nNextId;
-        ar & GeometricCamera::nNextId;
-        ar & mnLastInitKFidMap;
+        ar& Map::nNextId;
+        ar& Frame::nNextId;
+        ar& KeyFrame::nNextId;
+        ar& MapPoint::nNextId;
+        ar& GeometricCamera::nNextId;
+        ar& mnLastInitKFidMap;
     }
 
 public:
@@ -93,7 +90,7 @@ public:
     std::vector<GeometricCamera*> GetAllCameras();
 
     /* All methods without Map pointer work on current map */
-    void SetReferenceMapPoints(const std::vector<MapPoint*> &vpMPs);
+    void SetReferenceMapPoints(const std::vector<MapPoint*>& vpMPs);
     void InformNewBigChange();
     int GetLastBigChangeIdx();
 
@@ -140,7 +137,6 @@ public:
     long unsigned int GetNumLivedMP();
 
 protected:
-
     std::set<Map*> mspMaps;
     std::set<Map*> mspBadMaps;
     // Its necessary change the container from set to vector because libboost 1.58 and Ubuntu 16.04 have an error with this cointainer
@@ -161,7 +157,6 @@ protected:
 
     // Mutex
     std::mutex mMutexAtlas;
-
 
 }; // class Atlas
 

@@ -24,44 +24,30 @@
 #include <stdlib.h>
 #include <string>
 
+namespace ORB_SLAM3 {
 
-namespace ORB_SLAM3
-{
-
-class ViewerConfig
-{
-
+class ViewerConfig {
 };
 
-class CameraConfig
-{
-
+class CameraConfig {
 };
 
-class ORBExtractorConfig
-{
-
+class ORBExtractorConfig {
 };
 
-class IMUConfig
-{
-
+class IMUConfig {
 };
 
-class ConfigParser
-{
+class ConfigParser {
 public:
-    bool ParseConfigFile(std::string &strConfigFile);
+    bool ParseConfigFile(std::string& strConfigFile);
 
 private:
-
     ViewerConfig mViewerConfig;
     CameraConfig mCameraConfig;
     ORBExtractorConfig mORBConfig;
     IMUConfig mIMUConfig;
-
 };
-
 }
 
 #endif // CONFIG_H
