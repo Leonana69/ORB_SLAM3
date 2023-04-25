@@ -1341,11 +1341,3 @@ Eigen::Vector3f Frame::UnprojectStereoFishEye(const int& i)
 }
 
 } //namespace ORB_SLAM
-
-
-Format!
-WebKit
-Style:
-C++ online code formatter © 2014 by KrzaQ
-
-Powered by vibe.d, the D language and clang-format
