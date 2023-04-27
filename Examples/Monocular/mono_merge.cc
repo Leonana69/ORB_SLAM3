@@ -17,24 +17,33 @@ void LoadImages(const string& strPathToSequence, vector<string>& imageFilenames,
 void ExecuteSLAM(ORB_SLAM3::System& SLAM, vector<string>& iamgeFilenames, vector<double>& timestamps);
 
 int main(int argc, char **argv) {
-    if (argc != 4) {
-        cerr << endl << "Usage: ./mono_nuc path_to_vocabulary path_to_settings path_to_sequence" << endl;        
+    if (argc != 6) {
+        cerr << endl << "Usage: ./mono_nuc path_to_vocabulary path_to_settings1 path_to_sequence1 path_to_settings2 path_to_sequence2" << endl;        
         return 1;
     }
 
     // Retrieve paths to images
-    vector<string> imageFilenames;
-    vector<double> timestamps;
-    LoadImages(string(argv[3]), imageFilenames, timestamps);
+    vector<string> imageFilenames1;
+    vector<string> imageFilenames2;
+    vector<double> timestamps1;
+    vector<double> timestamps2;
+    LoadImages(string(argv[3]), imageFilenames1, timestamps1);
+    LoadImages(string(argv[5]), imageFilenames2, timestamps2);
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System SLAM(argv[1], argv[2], ORB_SLAM3::System::MONOCULAR, true);
+    ORB_SLAM3::System SLAM1(argv[1], argv[2], ORB_SLAM3::System::MONOCULAR, true, 0, "", "iphone_1");
+    ORB_SLAM3::System SLAM2(argv[1], argv[4], ORB_SLAM3::System::MONOCULAR, true, 0, "", "iphone_2");
 
-    thread RunSLAM([&SLAM, &imageFilenames, &timestamps] {
-        ExecuteSLAM(SLAM, imageFilenames, timestamps);
+    thread RunSLAM1([&SLAM1, &imageFilenames1, &timestamps1] {
+        ExecuteSLAM(SLAM1, imageFilenames1, timestamps1);
     });
 
-    RunSLAM.join();
+    thread RunSLAM2([&SLAM2, &imageFilenames2, &timestamps2] {
+        ExecuteSLAM(SLAM2, imageFilenames2, timestamps2);
+    });
+
+    RunSLAM1.join();
+    RunSLAM2.join();
     
     return 0;
 }

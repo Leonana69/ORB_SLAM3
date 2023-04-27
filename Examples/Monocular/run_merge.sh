@@ -1,1 +1,1 @@
-~/Dev/ORB_SLAM3/Examples/Monocular/mono_merge ~/Dev/ORB_SLAM3/Vocabulary/ORBvoc.txt ./iphone.yaml /duke_drone/iphone_1
+~/Dev/ORB_SLAM3/Examples/Monocular/mono_merge ~/Dev/ORB_SLAM3/Vocabulary/ORBvoc.txt ./iphone.yaml /duke_drone/iphone_1 ./iphone.yaml /duke_drone/tello_2

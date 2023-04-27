@@ -60,20 +60,22 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale)
 
     //Copy variables within scoped mutex
     {
-        unique_lock<mutex> lock(mMutex);
-        state = mState;
-        if (mState == Tracking::SYSTEM_NOT_READY)
+        {
+            unique_lock<mutex> lock(mMutex);
+            state = mState;
+        }
+        if (state == Tracking::SYSTEM_NOT_READY)
             mState = Tracking::NO_IMAGES_YET;
 
         mIm.copyTo(im);
 
-        if (mState == Tracking::NOT_INITIALIZED) {
+        if (state == Tracking::NOT_INITIALIZED) {
             vCurrentKeys = mvCurrentKeys;
             vIniKeys = mvIniKeys;
             vMatches = mvIniMatches;
             vTracks = mvTracks;
         }
-        else if (mState == Tracking::OK) {
+        else if (state == Tracking::OK) {
             vCurrentKeys = mvCurrentKeys;
             vbVO = mvbVO;
             vbMap = mvbMap;
@@ -90,7 +92,7 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale)
             vCurrentDepth = mvCurrentDepth;
             thDepth = mThDepth;
         }
-        else if (mState == Tracking::LOST) {
+        else if (state == Tracking::LOST) {
             vCurrentKeys = mvCurrentKeys;
         }
     }

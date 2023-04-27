@@ -23,7 +23,7 @@
 
 namespace ORB_SLAM3 {
 
-Viewer::Viewer(System* pSystem, FrameDrawer* pFrameDrawer, MapDrawer* pMapDrawer, Tracking* pTracking, const string& strSettingPath, Settings* settings)
+Viewer::Viewer(System* pSystem, FrameDrawer* pFrameDrawer, MapDrawer* pMapDrawer, Tracking* pTracking, const string& strSettingPath, Settings* settings, const string& viewerWindowName)
     : both(false)
     , mpSystem(pSystem)
     , mpFrameDrawer(pFrameDrawer)
@@ -52,8 +52,8 @@ Viewer::Viewer(System* pSystem, FrameDrawer* pFrameDrawer, MapDrawer* pMapDrawer
         }
     }
 
-    mapViewerWindowName = "ORB-SLAM3: Map Viewer of " + strSettingPath;
-    frameViewerWindowName = "ORB-SLAM3: Current Frame of " + strSettingPath;
+    mapViewerWindowName = "ORB-SLAM3: Map Viewer of " + viewerWindowName;
+    frameViewerWindowName = "ORB-SLAM3: Current Frame of " + viewerWindowName;
 
     mbStopTrack = false;
 }
@@ -309,7 +309,7 @@ void Viewer::Run()
         }
 
         cv::imshow(frameViewerWindowName, toShow);
-        cv::waitKey(mT);
+        cv::waitKey((int)mT);
 
         if (menuReset) {
             menuShowGraph = true;
