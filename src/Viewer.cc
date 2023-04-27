@@ -308,7 +308,7 @@ void Viewer::Run()
             cv::resize(toShow, toShow, cv::Size(width, height));
         }
 
-        cv::imshow("ORB-SLAM3: Current Frame", toShow);
+        cv::imshow(frameViewerWindowName, toShow);
         cv::waitKey(mT);
 
         if (menuReset) {

@@ -19,13 +19,13 @@ Camera1.p1: 0.0
 Camera1.p2: 0.0
 
 # Camera frames per second 
-Camera.fps: 30
+Camera.fps: 25
 
 # Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
 Camera.RGB: 0
 
 # Camera resolution
-Camera.width: 540
+Camera.width: 640
 Camera.height: 360
 
 #--------------------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ Camera.height: 360
 #--------------------------------------------------------------------------------------------
 
 # ORB Extractor: Number of features per image
-ORBextractor.nFeatures: 1000
+ORBextractor.nFeatures: 2000
 
 # ORB Extractor: Scale factor between levels in the scale pyramid 	
 ORBextractor.scaleFactor: 1.2
