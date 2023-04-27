@@ -52,6 +52,9 @@ Viewer::Viewer(System* pSystem, FrameDrawer* pFrameDrawer, MapDrawer* pMapDrawer
         }
     }
 
+    mapViewerWindowName = "ORB-SLAM3: Map Viewer of " + strSettingPath;
+    frameViewerWindowName = "ORB-SLAM3: Current Frame of " + strSettingPath;
+
     mbStopTrack = false;
 }
 
@@ -152,7 +155,7 @@ void Viewer::Run()
     mbFinished = false;
     mbStopped = false;
 
-    pangolin::CreateWindowAndBind("ORB-SLAM3: Map Viewer", 1024, 768);
+    pangolin::CreateWindowAndBind(mapViewerWindowName, 1024, 768);
 
     // 3D Mouse handler requires depth testing to be enabled
     glEnable(GL_DEPTH_TEST);
@@ -191,7 +194,7 @@ void Viewer::Run()
     Twc.SetIdentity();
     pangolin::OpenGlMatrix Ow; // Oriented with g in the z axis
     Ow.SetIdentity();
-    cv::namedWindow("ORB-SLAM3: Current Frame");
+    cv::namedWindow(frameViewerWindowName);
 
     bool bFollow = true;
     bool bLocalizationMode = false;

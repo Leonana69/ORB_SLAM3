@@ -90,6 +90,9 @@ private:
     std::mutex mMutexStop;
 
     bool mbStopTrack;
+
+    std::string mapViewerWindowName;
+    std::string frameViewerWindowName;
 };
 }
 
