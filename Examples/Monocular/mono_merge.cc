@@ -83,6 +83,7 @@ void ExecuteSLAM(ORB_SLAM3::System& SLAM, vector<string>& iamgeFilenames, vector
     int nImages = iamgeFilenames.size();
     vector<float> vTimesTrack;
     vTimesTrack.resize(nImages);
+    float imageScale = SLAM.GetImageScale();
 
     // Main loop
     cv::Mat im;
@@ -95,6 +96,12 @@ void ExecuteSLAM(ORB_SLAM3::System& SLAM, vector<string>& iamgeFilenames, vector
             cerr << endl
                  << "Failed to load image at: " << iamgeFilenames[ni] << endl;
             return;
+        }
+
+        if (imageScale != 1.0f) {
+            int width = imageScale * im.cols;
+            int height = imageScale * im.rows;
+            cv::resize(im, im, cv::Size(width, height));
         }
 
         std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();

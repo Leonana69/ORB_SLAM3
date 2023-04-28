@@ -22,7 +22,7 @@ Camera1.p2: 0.0
 Camera.fps: 25
 
 # Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
-Camera.RGB: 0
+Camera.RGB: 1
 
 # Camera resolution
 Camera.width: 640
